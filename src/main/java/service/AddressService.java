@@ -6,12 +6,9 @@ import entity.Address;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddressService implements CrudDao<Address, Integer> {
-
 
     @Override
     public void add(Address address) {
@@ -34,7 +31,7 @@ public class AddressService implements CrudDao<Address, Integer> {
 
         session.beginTransaction();
 
-        Query query = session.createNativeQuery(getAll).addEntity(Address.class);
+        Query<Address> query = session.createNativeQuery(getAll).addEntity(Address.class);
         List<Address> addressList = query.list();
 
         session.getTransaction().commit();
@@ -44,17 +41,17 @@ public class AddressService implements CrudDao<Address, Integer> {
     }
 
     @Override
-    public Address getById(Integer id) throws SQLException {
+    public Address getById(Integer id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         String getId = "SELECT * FROM h2project.address where address_id = :address_id";
 
         session.beginTransaction();
 
-        Query query = session.createNativeQuery(getId).addEntity(Address.class);
+        Query<Address> query = session.createNativeQuery(getId).addEntity(Address.class);
         query.setParameter("address_id", id);
 
-        Address address = (Address) query.getSingleResult();
+        Address address = query.getSingleResult();
 
         session.getTransaction().commit();
         session.close();
@@ -64,7 +61,7 @@ public class AddressService implements CrudDao<Address, Integer> {
     }
 
     @Override
-    public void update(Address address) throws SQLException {
+    public void update(Address address) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -75,7 +72,7 @@ public class AddressService implements CrudDao<Address, Integer> {
     }
 
     @Override
-    public void delete(Address address) throws SQLException {
+    public void delete(Address address) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 

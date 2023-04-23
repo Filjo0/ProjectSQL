@@ -6,7 +6,6 @@ import entity.Project;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.sql.*;
 import java.util.List;
 
 public class ProjectService implements CrudDao<Project, Integer> {
@@ -30,7 +29,7 @@ public class ProjectService implements CrudDao<Project, Integer> {
         String getAll = "SELECT * FROM h2project.project";
 
         session.beginTransaction();
-        Query query = session.createNativeQuery(getAll).addEntity(Project.class);
+        Query<Project> query = session.createNativeQuery(getAll).addEntity(Project.class);
         List<Project> projectList = query.list();
 
         session.getTransaction().commit();
@@ -40,16 +39,16 @@ public class ProjectService implements CrudDao<Project, Integer> {
     }
 
     @Override
-    public Project getById(Integer id) throws SQLException {
+    public Project getById(Integer id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         String getId = "SELECT * FROM h2project.project where project_id = :project_id";
         session.beginTransaction();
 
-        Query query = session.createNativeQuery(getId).addEntity(Project.class);
+        Query<Project> query = session.createNativeQuery(getId).addEntity(Project.class);
         query.setParameter("project_id", id);
 
-        Project project = (Project) query.getSingleResult();
+        Project project = query.getSingleResult();
 
         session.getTransaction().commit();
         session.close();
