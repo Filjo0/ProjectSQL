@@ -16,7 +16,7 @@ public class EmployeeService implements CrudDao<Employee, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.save(employee);
+        session.persist(employee);
 
         session.getTransaction().commit();
         session.close();
@@ -30,7 +30,7 @@ public class EmployeeService implements CrudDao<Employee, Integer> {
         String getAll = "SELECT * FROM h2project.employee";
 
         session.beginTransaction();
-        Query<Employee> query = session.createNativeQuery(getAll).addEntity(Employee.class);
+        Query<Employee> query = session.createNativeQuery(getAll, Employee.class);
         List<Employee> employeeList = query.list();
 
         session.getTransaction().commit();
@@ -40,13 +40,13 @@ public class EmployeeService implements CrudDao<Employee, Integer> {
     }
 
     @Override
-    public Employee getById(Integer id) throws SQLException {
+    public Employee getById(Integer id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         String getId = "SELECT * FROM h2project.employee where employee_id = :employee_id";
         session.beginTransaction();
 
-        Query<Employee> query = session.createNativeQuery(getId).addEntity(Employee.class);
+        Query<Employee> query = session.createNativeQuery(getId, Employee.class);
         query.setParameter("employee_id", id);
 
         Employee employee = query.getSingleResult();
@@ -62,7 +62,7 @@ public class EmployeeService implements CrudDao<Employee, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.update(employee);
+        session.merge(employee);
 
         session.getTransaction().commit();
         session.close();
@@ -73,7 +73,7 @@ public class EmployeeService implements CrudDao<Employee, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.delete(employee);
+        session.remove(employee);
 
         session.getTransaction().commit();
         session.close();

@@ -4,6 +4,7 @@ import blogic.HibernateUtil;
 import dao.CrudDao;
 import entity.Project;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class ProjectService implements CrudDao<Project, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.save(project);
+        session.persist(project);
 
         session.getTransaction().commit();
         session.close();
@@ -29,7 +30,7 @@ public class ProjectService implements CrudDao<Project, Integer> {
         String getAll = "SELECT * FROM h2project.project";
 
         session.beginTransaction();
-        Query<Project> query = session.createNativeQuery(getAll).addEntity(Project.class);
+        NativeQuery<Project> query = session.createNativeQuery(getAll, Project.class);
         List<Project> projectList = query.list();
 
         session.getTransaction().commit();
@@ -45,7 +46,7 @@ public class ProjectService implements CrudDao<Project, Integer> {
         String getId = "SELECT * FROM h2project.project where project_id = :project_id";
         session.beginTransaction();
 
-        Query<Project> query = session.createNativeQuery(getId).addEntity(Project.class);
+        Query<Project> query = session.createNativeQuery(getId, Project.class);
         query.setParameter("project_id", id);
 
         Project project = query.getSingleResult();
@@ -61,7 +62,7 @@ public class ProjectService implements CrudDao<Project, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.update(project);
+        session.merge(project);
 
         session.getTransaction().commit();
         session.close();
@@ -72,7 +73,7 @@ public class ProjectService implements CrudDao<Project, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.delete(project);
+        session.remove(project);
 
         session.getTransaction().commit();
         session.close();

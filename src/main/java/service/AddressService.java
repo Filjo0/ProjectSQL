@@ -15,7 +15,7 @@ public class AddressService implements CrudDao<Address, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.save(address);
+        session.persist(address);
 
         session.getTransaction().commit();
         session.close();
@@ -31,7 +31,7 @@ public class AddressService implements CrudDao<Address, Integer> {
 
         session.beginTransaction();
 
-        Query<Address> query = session.createNativeQuery(getAll).addEntity(Address.class);
+        Query<Address> query = session.createNativeQuery(getAll, Address.class);
         List<Address> addressList = query.list();
 
         session.getTransaction().commit();
@@ -48,7 +48,7 @@ public class AddressService implements CrudDao<Address, Integer> {
 
         session.beginTransaction();
 
-        Query<Address> query = session.createNativeQuery(getId).addEntity(Address.class);
+        Query<Address> query = session.createNativeQuery(getId, Address.class);
         query.setParameter("address_id", id);
 
         Address address = query.getSingleResult();
@@ -65,7 +65,7 @@ public class AddressService implements CrudDao<Address, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.update(address);
+        session.merge(address);
 
         session.getTransaction().commit();
         session.close();
@@ -76,7 +76,7 @@ public class AddressService implements CrudDao<Address, Integer> {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.delete(address);
+        session.remove(address);
 
         session.getTransaction().commit();
         session.close();
